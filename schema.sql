@@ -68,5 +68,5 @@ CREATE TABLE IF NOT EXISTS base_salidas (
 );
 
 INSERT INTO usuarios (username, password, nombre, rol)
-VALUES ('admin', '$2b$10$rOGz/1AHuCHJ0gFn8Tg8.OXaBFqT0fE/2p3aQVQqK9FVBMiB.B5Wy', 'Administrador', 'admin')
+VALUES ('admin', 'admin123', 'Administrador', 'admin')
 ON CONFLICT DO NOTHING;

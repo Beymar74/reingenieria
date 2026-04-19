@@ -4,13 +4,15 @@ services:
     build: .
     ports:
       - "3000:3000"
-    volumes:
-      - .:/app
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       DATABASE_URL: postgres://user:password@db:5432/jans_pos
-      POSTGRES_HOST: db
+      JWT_SECRET: jans-super-secret-key-2024
+      NODE_ENV: production
+      NEXTAUTH_SECRET: jans-secret
+
   db:
     image: postgres:15
     environment:
@@ -22,6 +24,11 @@ services:
     volumes:
       - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d jans_pos"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
   postgres_data:

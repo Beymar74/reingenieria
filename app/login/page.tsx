@@ -12,17 +12,25 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     setError('');
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    });
-    const data = await res.json();
-    setLoading(false);
-    if (res.ok) {
-      router.push('/dashboard');
-    } else {
-      setError(data.error || 'Credenciales incorrectas');
+    console.log('LOGIN SUBMIT', form);
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+
+      const data = await res.json();
+      console.log('LOGIN RESPONSE', { status: res.status, ok: res.ok, data });
+      if (res.ok) {
+        window.location.href = '/dashboard';
+      } else {
+        setError(data?.error || 'Credenciales incorrectas');
+      }
+    } catch (err: any) {
+      setError(err?.message || 'Error en el servidor');
+    } finally {
+      setLoading(false);
     }
   }
 

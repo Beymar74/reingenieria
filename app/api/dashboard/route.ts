@@ -1,11 +1,7 @@
 import { NextResponse } from 'next/server';
 import pool from '@/lib/db';
-import { getSession } from '@/lib/auth';
 
 export async function GET() {
-  const session = await getSession();
-  if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
-
   const [productos, terceros, entradas, salidas, stockBajo] = await Promise.all([
     pool.query('SELECT COUNT(*) as total FROM productos WHERE estado = true'),
     pool.query('SELECT COUNT(*) as total FROM terceros WHERE estado = true'),

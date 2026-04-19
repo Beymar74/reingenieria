@@ -5,8 +5,12 @@ import { getSession } from '@/lib/auth';
 export async function GET() {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
-  const result = await pool.query('SELECT * FROM terceros ORDER BY nombre_tercero');
-  return NextResponse.json(result.rows);
+  try {
+    const result = await pool.query('SELECT * FROM terceros ORDER BY nombre_tercero');
+    return NextResponse.json(result.rows);
+  } catch (e: any) {
+    return NextResponse.json({ error: e.message }, { status: 500 });
+  }
 }
 
 export async function POST(req: NextRequest) {
