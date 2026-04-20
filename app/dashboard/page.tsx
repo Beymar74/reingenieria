@@ -30,16 +30,9 @@ function StatCard({ icon, label, value, sub, color }: any) {
 
 export default function DashboardPage() {
   const [stats, setStats] = useState<Stats | null>(null);
-  const [error, setError] = useState<string>('');
 
   useEffect(() => {
-    fetch('/api/dashboard')
-      .then(r => {
-        if (!r.ok) throw new Error('Error al cargar datos');
-        return r.json();
-      })
-      .then(setStats)
-      .catch(err => setError(err.message || 'Error desconocido'));
+    fetch('/api/dashboard').then(r => r.json()).then(setStats);
   }, []);
 
   const fmt = (n: number) => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(n);
@@ -51,19 +44,9 @@ export default function DashboardPage() {
         {new Date().toLocaleDateString('es-CO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
       </p>
 
-      {error && (
-        <div style={{
-          background: 'rgba(255,70,70,0.15)', border: '1px solid rgba(255,70,70,0.3)',
-          borderRadius: 8, padding: '1rem', marginBottom: '2rem',
-          color: '#ff6666', fontSize: '0.9rem'
-        }}>
-          ❌ {error}
-        </div>
-      )}
-
-      {!stats && !error ? (
+      {!stats ? (
         <div style={{ color: 'var(--text2)' }}>Cargando...</div>
-      ) : stats ? (
+      ) : (
         <>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
             <StatCard icon="📦" label="Productos Activos" value={stats.productos} color="var(--accent)" />
@@ -102,7 +85,7 @@ export default function DashboardPage() {
             </div>
           )}
         </>
-      ) : null}
+      )}
     </div>
   );
 }
