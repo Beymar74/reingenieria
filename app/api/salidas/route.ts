@@ -5,16 +5,12 @@ import { getSession } from '@/lib/auth';
 export async function GET() {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
-  try {
-    const result = await pool.query(`
-      SELECT s.*, t.nombre_tercero as nombre_cliente
-      FROM salidas s LEFT JOIN terceros t ON s.cliente = t.id_tercero
-      ORDER BY s.fecha DESC
-    `);
-    return NextResponse.json(result.rows);
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
-  }
+  const result = await pool.query(`
+    SELECT s.*, t.nombre_tercero as nombre_cliente
+    FROM salidas s LEFT JOIN terceros t ON s.cliente = t.id_tercero
+    ORDER BY s.fecha DESC
+  `);
+  return NextResponse.json(result.rows);
 }
 
 export async function POST(req: NextRequest) {
@@ -33,9 +29,10 @@ export async function POST(req: NextRequest) {
     for (const d of detalles) {
       const stockCheck = await client.query('SELECT stock FROM productos WHERE id_producto=$1', [d.id_producto_salida]);
       if (stockCheck.rows[0].stock < d.unidades_salida) throw new Error(`Stock insuficiente para ${d.nombre_producto}`);
+      const subTotal = d.costo_unitario_salida * d.unidades_salida;
       await client.query(
-        'INSERT INTO base_salidas (numero_salida, id_producto_salida, nombre_producto, costo_unitario_salida, unidades_salida) VALUES ($1,$2,$3,$4,$5)',
-        [numero_salida, d.id_producto_salida, d.nombre_producto, d.costo_unitario_salida, d.unidades_salida]
+        'INSERT INTO base_salidas (numero_salida, id_producto_salida, nombre_producto, costo_unitario_salida, unidades_salida, sub_total_s) VALUES ($1,$2,$3,$4,$5,$6)',
+        [numero_salida, d.id_producto_salida, d.nombre_producto, d.costo_unitario_salida, d.unidades_salida, subTotal]
       );
       await client.query(
         'UPDATE productos SET stock = stock - $1 WHERE id_producto = $2',

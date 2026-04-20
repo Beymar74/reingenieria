@@ -8,6 +8,8 @@ const navItems = [
   { href: '/dashboard/terceros', label: 'Clientes/Proveed.', icon: '👥' },
   { href: '/dashboard/entradas', label: 'Entradas', icon: '📥' },
   { href: '/dashboard/salidas', label: 'Salidas', icon: '📤' },
+  { href: '/dashboard/inventario', label: 'Inventario', icon: '🗃️' },
+  { href: '/dashboard/informes', label: 'Informes', icon: '📈' },
 ];
 
 export default function Sidebar() {
@@ -25,7 +27,6 @@ export default function Sidebar() {
       borderRight: '1px solid var(--border)', display: 'flex', flexDirection: 'column',
       padding: '1.5rem 0', position: 'fixed', left: 0, top: 0, bottom: 0, zIndex: 10
     }}>
-      {/* Logo */}
       <div style={{ padding: '0 1.5rem 1.5rem', borderBottom: '1px solid var(--border)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{
@@ -40,7 +41,6 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {/* Nav */}
       <nav style={{ flex: 1, padding: '1rem 0.75rem' }}>
         {navItems.map(item => {
           const active = pathname === item.href;
@@ -60,7 +60,6 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* Logout */}
       <div style={{ padding: '0 0.75rem' }}>
         <button onClick={handleLogout} style={{
           display: 'flex', alignItems: 'center', gap: 10, padding: '0.65rem 0.9rem',

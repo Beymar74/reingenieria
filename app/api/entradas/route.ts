@@ -5,16 +5,12 @@ import { getSession } from '@/lib/auth';
 export async function GET() {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
-  try {
-    const result = await pool.query(`
-      SELECT e.*, t.nombre_tercero as nombre_proveedor 
-      FROM entradas e LEFT JOIN terceros t ON e.proveedor = t.id_tercero 
-      ORDER BY e.fecha DESC
-    `);
-    return NextResponse.json(result.rows);
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
-  }
+  const result = await pool.query(`
+    SELECT e.*, t.nombre_tercero as nombre_proveedor 
+    FROM entradas e LEFT JOIN terceros t ON e.proveedor = t.id_tercero 
+    ORDER BY e.fecha DESC
+  `);
+  return NextResponse.json(result.rows);
 }
 
 export async function POST(req: NextRequest) {
@@ -31,9 +27,10 @@ export async function POST(req: NextRequest) {
       [numero_entrada, fecha, proveedor, total]
     );
     for (const d of detalles) {
+      const subTotal = d.costo_unitario_entrada * d.unidades_entradas;
       await client.query(
-        'INSERT INTO base_entradas (numero_entrada, id_producto_entrada, nombre_producto, costo_unitario_entrada, unidades_entradas) VALUES ($1,$2,$3,$4,$5)',
-        [numero_entrada, d.id_producto_entrada, d.nombre_producto, d.costo_unitario_entrada, d.unidades_entradas]
+        'INSERT INTO base_entradas (numero_entrada, id_producto_entrada, nombre_producto, costo_unitario_entrada, unidades_entradas, sub_total_e) VALUES ($1,$2,$3,$4,$5,$6)',
+        [numero_entrada, d.id_producto_entrada, d.nombre_producto, d.costo_unitario_entrada, d.unidades_entradas, subTotal]
       );
       await client.query(
         'UPDATE productos SET stock = stock + $1 WHERE id_producto = $2',
