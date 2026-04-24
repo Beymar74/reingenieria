@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { Package, CircleDollarSign, Tag, TrendingUp } from 'lucide-react';
 
 interface Item {
   id_producto: string; nombre_producto: string; marca?: string;
@@ -38,13 +39,13 @@ export default function InventarioPage() {
       {/* Stats */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
         {[
-          { label: 'Total Unidades', value: totalStock.toLocaleString(), icon: '📦', color: 'var(--accent)' },
-          { label: 'Valor Compra', value: fmt(valorInventario), icon: '💰', color: '#ffa726' },
-          { label: 'Valor Venta', value: fmt(valorVenta), icon: '🏷️', color: '#43e97b' },
-          { label: 'Utilidad Potencial', value: fmt(utilidadPotencial), icon: '📈', color: 'var(--accent2)' },
-        ].map(s => (
+          { label: 'Total Unidades', value: totalStock.toLocaleString(), icon: Package, color: 'var(--accent)' },
+          { label: 'Valor Compra', value: fmt(valorInventario), icon: CircleDollarSign, color: '#ffa726' },
+          { label: 'Valor Venta', value: fmt(valorVenta), icon: Tag, color: '#43e97b' },
+          { label: 'Utilidad Potencial', value: fmt(utilidadPotencial), icon: TrendingUp, color: 'var(--accent2)' },
+        ].map((s: any) => (
           <div key={s.label} style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16, padding: '1.2rem' }}>
-            <div style={{ fontSize: '1.4rem', marginBottom: 6 }}>{s.icon}</div>
+            <div style={{ marginBottom: 6, color: s.color }}><s.icon size={28} strokeWidth={2} /></div>
             <div style={{ color: 'var(--text2)', fontSize: '0.8rem', marginBottom: 4 }}>{s.label}</div>
             <div style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: '1.1rem', color: s.color }}>{s.value}</div>
           </div>
@@ -53,7 +54,7 @@ export default function InventarioPage() {
 
       {/* Filtros */}
       <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem' }}>
-        <input className="input-field" placeholder="🔍 Buscar..." value={search} onChange={e => setSearch(e.target.value)} style={{ maxWidth: 300 }} />
+        <input className="input-field" placeholder="Buscar..." value={search} onChange={e => setSearch(e.target.value)} style={{ maxWidth: 300 }} />
         <select className="input-field" value={filtro} onChange={e => setFiltro(e.target.value)} style={{ maxWidth: 180 }}>
           <option value="TODOS">Todos</option>
           <option value="BAJO">Stock Bajo (&lt;5)</option>
@@ -62,8 +63,9 @@ export default function InventarioPage() {
         </select>
       </div>
 
-      <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16, overflow: 'hidden' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse whitespace-nowrap">
           <thead>
             <tr style={{ background: 'var(--surface2)', borderBottom: '1px solid var(--border)' }}>
               {['ID', 'Producto', 'Marca', 'P. Compra', 'P. Venta', 'Margen', 'Entradas', 'Salidas', 'Stock', 'Estado'].map(h => (
@@ -101,6 +103,7 @@ export default function InventarioPage() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );

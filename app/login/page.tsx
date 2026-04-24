@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Store } from 'lucide-react';
 
 export default function LoginPage() {
   const [form, setForm] = useState({ username: '', password: '' });
@@ -35,56 +36,39 @@ export default function LoginPage() {
   }
 
   return (
-    <div style={{
-      minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
-      background: 'var(--bg)', position: 'relative', overflow: 'hidden'
-    }}>
-      {/* Decorative blobs */}
-      <div style={{
-        position: 'absolute', width: 400, height: 400, borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(108,99,255,0.15) 0%, transparent 70%)',
-        top: '-100px', left: '-100px', pointerEvents: 'none'
-      }} />
-      <div style={{
-        position: 'absolute', width: 300, height: 300, borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(255,101,132,0.1) 0%, transparent 70%)',
-        bottom: '-50px', right: '-50px', pointerEvents: 'none'
-      }} />
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 relative overflow-hidden">
+      {/* Decorative subtle background elements */}
+      <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-blue-100/50 to-transparent pointer-events-none" />
 
-      <div className="glass animate-fade" style={{
-        padding: '3rem 2.5rem', borderRadius: 20, width: '100%', maxWidth: 420, zIndex: 1
-      }}>
+      <div className="bg-white p-10 rounded-2xl w-full max-w-md z-10 shadow-xl shadow-slate-200/50 border border-slate-100 animate-fade">
         {/* Logo */}
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <div style={{
-            width: 70, height: 70, borderRadius: 16,
-            background: 'linear-gradient(135deg, var(--accent), var(--accent2))',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            margin: '0 auto 1rem', fontSize: '1.8rem'
-          }}>🏪</div>
-          <h1 style={{ fontSize: '1.8rem', fontWeight: 800, margin: 0 }}>JANS</h1>
-          <p style={{ color: 'var(--text2)', marginTop: 4, fontSize: '0.9rem' }}>
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 rounded-2xl bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-600/30 mx-auto mb-4">
+            <Store size={32} />
+          </div>
+          <h1 className="text-3xl font-bold text-slate-900 font-['Syne'] tracking-tight mb-1">JANS</h1>
+          <p className="text-slate-500 text-sm font-medium">
             Sistema de Punto de Venta
           </p>
         </div>
 
-        <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: '1.2rem' }}>
-            <label style={{ display: 'block', marginBottom: 6, fontSize: '0.85rem', color: 'var(--text2)', fontWeight: 500 }}>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="block mb-2 text-sm font-medium text-slate-700">
               Usuario
             </label>
             <input
               className="input-field"
               type="text"
-              placeholder="admin"
+              placeholder="Ej. admin"
               value={form.username}
               onChange={e => setForm({ ...form, username: e.target.value })}
               required
             />
           </div>
 
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{ display: 'block', marginBottom: 6, fontSize: '0.85rem', color: 'var(--text2)', fontWeight: 500 }}>
+          <div>
+            <label className="block mb-2 text-sm font-medium text-slate-700">
               Contraseña
             </label>
             <input
@@ -98,23 +82,24 @@ export default function LoginPage() {
           </div>
 
           {error && (
-            <div style={{
-              background: 'rgba(255,70,70,0.15)', border: '1px solid rgba(255,70,70,0.3)',
-              borderRadius: 8, padding: '0.7rem 1rem', marginBottom: '1rem',
-              color: '#ff6666', fontSize: '0.9rem'
-            }}>
+            <div className="bg-rose-50 border border-rose-200 rounded-lg p-3 text-rose-600 text-sm font-medium flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
               {error}
             </div>
           )}
 
-          <button className="btn-primary" type="submit" disabled={loading} style={{ width: '100%', padding: '0.8rem' }}>
+          <button className="btn-primary w-full py-3 mt-2 text-base shadow-lg shadow-blue-600/20 hover:shadow-blue-600/30" type="submit" disabled={loading}>
             {loading ? 'Ingresando...' : 'Ingresar al Sistema'}
           </button>
         </form>
 
-        <p style={{ textAlign: 'center', marginTop: '1.5rem', color: 'var(--text2)', fontSize: '0.8rem' }}>
-          Usuario por defecto: <strong style={{ color: 'var(--text)' }}>admin / admin123</strong>
-        </p>
+        <div className="mt-8 pt-6 border-t border-slate-100 text-center">
+          <p className="text-slate-500 text-xs">
+            Usuario por defecto: <strong className="text-slate-700">admin / admin123</strong>
+          </p>
+        </div>
       </div>
     </div>
   );

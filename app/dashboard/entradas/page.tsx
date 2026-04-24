@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { Eye, X } from 'lucide-react';
 
 interface Detalle { id_producto_entrada: string; nombre_producto: string; costo_unitario_entrada: number; unidades_entradas: number; }
 interface Entrada { numero_entrada: string; fecha: string; proveedor: string; nombre_proveedor?: string; total: number; }
@@ -63,8 +64,9 @@ export default function EntradasPage() {
 
       {msg && <div style={{ background: 'rgba(67,233,123,0.15)', border: '1px solid rgba(67,233,123,0.3)', borderRadius: 8, padding: '0.7rem 1rem', marginBottom: '1rem', color: '#43e97b' }}>{msg}</div>}
 
-      <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16, overflow: 'hidden' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse whitespace-nowrap">
           <thead>
             <tr style={{ background: 'var(--surface2)', borderBottom: '1px solid var(--border)' }}>
               {['# Entrada', 'Fecha', 'Proveedor', 'Total', 'Detalle'].map(h => (
@@ -80,13 +82,14 @@ export default function EntradasPage() {
                 <td style={{ padding: '0.7rem 1rem' }}>{e.nombre_proveedor || e.proveedor}</td>
                 <td style={{ padding: '0.7rem 1rem', fontWeight: 600 }}>{fmt(e.total)}</td>
                 <td style={{ padding: '0.7rem 1rem' }}>
-                  <button className="btn-secondary" onClick={() => verDetalle(e)} style={{ padding: '4px 12px', fontSize: '0.8rem' }}>👁️ Ver</button>
+                  <button className="btn-secondary" onClick={() => verDetalle(e)} style={{ padding: '4px 12px', fontSize: '0.8rem' }}><Eye size={16} className="inline mr-1" /> Ver</button>
                 </td>
               </tr>
             ))}
             {entradas.length === 0 && <tr><td colSpan={5} style={{ textAlign: 'center', padding: '2rem', color: 'var(--text2)' }}>No hay entradas registradas</td></tr>}
           </tbody>
         </table>
+        </div>
       </div>
 
       {/* Modal nueva entrada */}
@@ -123,7 +126,7 @@ export default function EntradasPage() {
                 </select>
                 <input className="input-field" type="number" placeholder="Costo unit." value={d.costo_unitario_entrada} onChange={e => updateDetalle(i, 'costo_unitario_entrada', Number(e.target.value))} style={{ fontSize: '0.85rem' }} />
                 <input className="input-field" type="number" min="1" placeholder="Unidades" value={d.unidades_entradas} onChange={e => updateDetalle(i, 'unidades_entradas', Number(e.target.value))} style={{ fontSize: '0.85rem' }} />
-                <button className="btn-danger" onClick={() => removeDetalle(i)} style={{ padding: '6px 10px' }}>✕</button>
+                <button className="btn-danger" onClick={() => removeDetalle(i)} style={{ padding: '6px 10px' }}><X size={16} /></button>
               </div>
             ))}
             {detalles.length === 0 && <p style={{ color: 'var(--text2)', fontSize: '0.9rem', margin: '0.5rem 0 1rem' }}>Agrega productos a la entrada</p>}
@@ -145,7 +148,8 @@ export default function EntradasPage() {
           <div className="modal-box" style={{ maxWidth: 600 }} onClick={e => e.stopPropagation()}>
             <h2 style={{ fontFamily: 'Syne', marginBottom: 4 }}>Detalle: {detalleModal.entry.numero_entrada}</h2>
             <p style={{ color: 'var(--text2)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>{detalleModal.entry.nombre_proveedor} — {new Date(detalleModal.entry.fecha).toLocaleDateString('es-CO')}</p>
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse whitespace-nowrap">
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--border)' }}>
                   {['Producto', 'Costo Unit.', 'Unidades', 'Subtotal'].map(h => (
@@ -164,6 +168,7 @@ export default function EntradasPage() {
                 ))}
               </tbody>
             </table>
+            </div>
             <div style={{ textAlign: 'right', marginTop: '1rem', fontFamily: 'Syne', fontWeight: 700, fontSize: '1.1rem' }}>Total: {fmt(detalleModal.entry.total)}</div>
             <div style={{ textAlign: 'right', marginTop: '1rem' }}>
               <button className="btn-secondary" onClick={() => setDetalleModal(null)}>Cerrar</button>

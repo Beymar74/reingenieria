@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { BarChart, Archive, ArrowUpRight, ArrowDownRight, TrendingUp, CheckCircle2, XCircle } from 'lucide-react';
 
 type Tab = 'general' | 'inventario' | 'ventas' | 'compras' | 'utilidad';
 
@@ -17,12 +18,12 @@ export default function InformesPage() {
 
   const fmt = (n: number) => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(Number(n));
 
-  const tabs: { key: Tab; label: string; icon: string }[] = [
-    { key: 'general', label: 'General', icon: '📊' },
-    { key: 'inventario', label: 'Inventario', icon: '🗃️' },
-    { key: 'ventas', label: 'Consulta Ventas', icon: '📤' },
-    { key: 'compras', label: 'Consulta Compras', icon: '📥' },
-    { key: 'utilidad', label: 'Consulta Utilidad', icon: '💹' },
+  const tabs: { key: Tab; label: string; icon: any }[] = [
+    { key: 'general', label: 'General', icon: BarChart },
+    { key: 'inventario', label: 'Inventario', icon: Archive },
+    { key: 'ventas', label: 'Consulta Ventas', icon: ArrowUpRight },
+    { key: 'compras', label: 'Consulta Compras', icon: ArrowDownRight },
+    { key: 'utilidad', label: 'Consulta Utilidad', icon: TrendingUp },
   ];
 
   const maxDia = data ? Math.max(...data.porDia.map((d: any) => Math.max(Number(d.monto_entradas), Number(d.monto_salidas))), 1) : 1;
@@ -51,7 +52,7 @@ export default function InformesPage() {
             background: tab === t.key ? 'var(--accent)' : 'var(--surface)',
             color: tab === t.key ? 'white' : 'var(--text2)',
             border: tab === t.key ? 'none' : '1px solid var(--border)',
-          }}>{t.icon} {t.label}</button>
+          }}><t.icon size={16} /> {t.label}</button>
         ))}
       </div>
 
@@ -62,12 +63,12 @@ export default function InformesPage() {
             <>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
                 {[
-                  { label: 'Total Compras', value: fmt(data.resumen.entradas.monto), sub: `${data.resumen.entradas.cantidad} facturas`, color: '#ffa726', icon: '📥' },
-                  { label: 'Total Ventas', value: fmt(data.resumen.salidas.monto), sub: `${data.resumen.salidas.cantidad} facturas`, color: '#43e97b', icon: '📤' },
-                  { label: 'Utilidad', value: fmt(data.resumen.utilidad), sub: data.resumen.utilidad >= 0 ? '✅ Positiva' : '❌ Negativa', color: data.resumen.utilidad >= 0 ? '#43e97b' : '#ff6666', icon: '💹' },
-                ].map(s => (
+                  { label: 'Total Compras', value: fmt(data.resumen.entradas.monto), sub: `${data.resumen.entradas.cantidad} facturas`, color: '#ffa726', icon: ArrowDownRight },
+                  { label: 'Total Ventas', value: fmt(data.resumen.salidas.monto), sub: `${data.resumen.salidas.cantidad} facturas`, color: '#43e97b', icon: ArrowUpRight },
+                  { label: 'Utilidad', value: fmt(data.resumen.utilidad), sub: data.resumen.utilidad >= 0 ? <span className="flex items-center gap-1"><CheckCircle2 size={14}/> Positiva</span> : <span className="flex items-center gap-1"><XCircle size={14}/> Negativa</span>, color: data.resumen.utilidad >= 0 ? '#43e97b' : '#ff6666', icon: TrendingUp },
+                ].map((s: any) => (
                   <div key={s.label} style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16, padding: '1.5rem' }}>
-                    <div style={{ fontSize: '1.4rem', marginBottom: 6 }}>{s.icon}</div>
+                    <div style={{ marginBottom: 6, color: s.color }}><s.icon size={28} strokeWidth={2} /></div>
                     <div style={{ color: 'var(--text2)', fontSize: '0.8rem', marginBottom: 4 }}>{s.label}</div>
                     <div style={{ fontFamily: 'Syne', fontWeight: 800, fontSize: '1.2rem', color: s.color }}>{s.value}</div>
                     <div style={{ color: 'var(--text2)', fontSize: '0.8rem', marginTop: 4 }}>{s.sub}</div>
@@ -99,8 +100,9 @@ export default function InformesPage() {
 
           {/* INVENTARIO */}
           {tab === 'inventario' && (
-            <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16, overflow: 'hidden' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse whitespace-nowrap">
                 <thead>
                   <tr style={{ background: 'var(--surface2)', borderBottom: '1px solid var(--border)' }}>
                     {['ID Producto', 'Nombre Producto', 'Entradas', 'Salidas', 'Saldo'].map(h => (
@@ -121,14 +123,16 @@ export default function InformesPage() {
                     </tr>
                   ))}
                 </tbody>
-              </table>
+                </table>
+              </div>
             </div>
           )}
 
           {/* VENTAS */}
           {tab === 'ventas' && (
-            <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16, overflow: 'hidden' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse whitespace-nowrap">
                 <thead>
                   <tr style={{ background: 'var(--surface2)', borderBottom: '1px solid var(--border)' }}>
                     {['ID Producto', 'Nombre Producto', 'Unidades', 'Valor Venta'].map(h => (
@@ -147,14 +151,16 @@ export default function InformesPage() {
                   ))}
                   {data.ventas.length === 0 && <tr><td colSpan={4} style={{ textAlign: 'center', padding: '2rem', color: 'var(--text2)' }}>Sin ventas en el período</td></tr>}
                 </tbody>
-              </table>
+                </table>
+              </div>
             </div>
           )}
 
           {/* COMPRAS */}
           {tab === 'compras' && (
-            <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16, overflow: 'hidden' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse whitespace-nowrap">
                 <thead>
                   <tr style={{ background: 'var(--surface2)', borderBottom: '1px solid var(--border)' }}>
                     {['ID Producto', 'Nombre Producto', 'Unidades', 'Valor Compra'].map(h => (
@@ -173,14 +179,16 @@ export default function InformesPage() {
                   ))}
                   {data.compras.length === 0 && <tr><td colSpan={4} style={{ textAlign: 'center', padding: '2rem', color: 'var(--text2)' }}>Sin compras en el período</td></tr>}
                 </tbody>
-              </table>
+                </table>
+              </div>
             </div>
           )}
 
           {/* UTILIDAD */}
           {tab === 'utilidad' && (
-            <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16, overflow: 'hidden' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse whitespace-nowrap">
                 <thead>
                   <tr style={{ background: 'var(--surface2)', borderBottom: '1px solid var(--border)' }}>
                     {['ID Producto', 'Nombre Producto', 'Ventas', 'Compras', 'Utilidad'].map(h => (
@@ -202,7 +210,8 @@ export default function InformesPage() {
                   ))}
                   {data.utilidad.length === 0 && <tr><td colSpan={5} style={{ textAlign: 'center', padding: '2rem', color: 'var(--text2)' }}>Sin datos en el período</td></tr>}
                 </tbody>
-              </table>
+                </table>
+              </div>
             </div>
           )}
         </>

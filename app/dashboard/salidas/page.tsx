@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { Eye, X } from 'lucide-react';
 
 interface Detalle { id_producto_salida: string; nombre_producto: string; costo_unitario_salida: number; unidades_salida: number; stock?: number; }
 interface Salida { numero_salida: string; fecha: string; cliente: string; nombre_cliente?: string; total: number; }
@@ -63,8 +64,9 @@ export default function SalidasPage() {
 
       {msg && <div style={{ background: 'rgba(67,233,123,0.15)', border: '1px solid rgba(67,233,123,0.3)', borderRadius: 8, padding: '0.7rem 1rem', marginBottom: '1rem', color: '#43e97b' }}>{msg}</div>}
 
-      <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16, overflow: 'hidden' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse whitespace-nowrap">
           <thead>
             <tr style={{ background: 'var(--surface2)', borderBottom: '1px solid var(--border)' }}>
               {['# Salida', 'Fecha', 'Cliente', 'Total', 'Detalle'].map(h => (
@@ -80,13 +82,14 @@ export default function SalidasPage() {
                 <td style={{ padding: '0.7rem 1rem' }}>{s.nombre_cliente || s.cliente}</td>
                 <td style={{ padding: '0.7rem 1rem', fontWeight: 600 }}>{fmt(s.total)}</td>
                 <td style={{ padding: '0.7rem 1rem' }}>
-                  <button className="btn-secondary" onClick={() => verDetalle(s)} style={{ padding: '4px 12px', fontSize: '0.8rem' }}>👁️ Ver</button>
+                  <button className="btn-secondary" onClick={() => verDetalle(s)} style={{ padding: '4px 12px', fontSize: '0.8rem' }}><Eye size={16} className="inline mr-1" /> Ver</button>
                 </td>
               </tr>
             ))}
             {salidas.length === 0 && <tr><td colSpan={5} style={{ textAlign: 'center', padding: '2rem', color: 'var(--text2)' }}>No hay ventas registradas</td></tr>}
           </tbody>
         </table>
+        </div>
       </div>
 
       {modal && (
@@ -122,7 +125,7 @@ export default function SalidasPage() {
                 </select>
                 <input className="input-field" type="number" placeholder="Precio unit." value={d.costo_unitario_salida} onChange={e => updateDetalle(i, 'costo_unitario_salida', Number(e.target.value))} style={{ fontSize: '0.85rem' }} />
                 <input className="input-field" type="number" min="1" max={d.stock} placeholder="Unidades" value={d.unidades_salida} onChange={e => updateDetalle(i, 'unidades_salida', Number(e.target.value))} style={{ fontSize: '0.85rem' }} />
-                <button className="btn-danger" onClick={() => removeDetalle(i)} style={{ padding: '6px 10px' }}>✕</button>
+                <button className="btn-danger" onClick={() => removeDetalle(i)} style={{ padding: '6px 10px' }}><X size={16} /></button>
               </div>
             ))}
             {detalles.length === 0 && <p style={{ color: 'var(--text2)', fontSize: '0.9rem', margin: '0.5rem 0 1rem' }}>Agrega productos a la venta</p>}
@@ -143,7 +146,8 @@ export default function SalidasPage() {
           <div className="modal-box" style={{ maxWidth: 600 }} onClick={e => e.stopPropagation()}>
             <h2 style={{ fontFamily: 'Syne', marginBottom: 4 }}>Detalle: {detalleModal.entry.numero_salida}</h2>
             <p style={{ color: 'var(--text2)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>{detalleModal.entry.nombre_cliente} — {new Date(detalleModal.entry.fecha).toLocaleDateString('es-CO')}</p>
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse whitespace-nowrap">
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--border)' }}>
                   {['Producto', 'Precio Unit.', 'Unidades', 'Subtotal'].map(h => (
@@ -162,6 +166,7 @@ export default function SalidasPage() {
                 ))}
               </tbody>
             </table>
+            </div>
             <div style={{ textAlign: 'right', marginTop: '1rem', fontFamily: 'Syne', fontWeight: 700, fontSize: '1.1rem' }}>Total: {fmt(detalleModal.entry.total)}</div>
             <div style={{ textAlign: 'right', marginTop: '1rem' }}>
               <button className="btn-secondary" onClick={() => setDetalleModal(null)}>Cerrar</button>
