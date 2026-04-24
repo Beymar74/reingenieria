@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { Edit2, Trash2 } from 'lucide-react';
 
 interface Producto {
   id_producto: string; nombre_producto: string; marca?: string;
@@ -57,11 +58,12 @@ export default function ProductsPage() {
       {msg && <div style={{ background: 'rgba(67,233,123,0.15)', border: '1px solid rgba(67,233,123,0.3)', borderRadius: 8, padding: '0.7rem 1rem', marginBottom: '1rem', color: '#43e97b' }}>{msg}</div>}
 
       <div style={{ marginBottom: '1rem' }}>
-        <input className="input-field" placeholder="🔍 Buscar por nombre o ID..." value={search} onChange={e => setSearch(e.target.value)} style={{ maxWidth: 380 }} />
+        <input className="input-field" placeholder="Buscar por nombre o ID..." value={search} onChange={e => setSearch(e.target.value)} style={{ maxWidth: 380 }} />
       </div>
 
-      <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16, overflow: 'hidden' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse whitespace-nowrap">
           <thead>
             <tr style={{ background: 'var(--surface2)', borderBottom: '1px solid var(--border)' }}>
               {['ID', 'Nombre', 'Marca', 'P. Compra', 'P. Venta', 'Stock', 'Estado', 'Acciones'].map(h => (
@@ -85,8 +87,8 @@ export default function ProductsPage() {
                 </td>
                 <td style={{ padding: '0.7rem 1rem' }}>
                   <div style={{ display: 'flex', gap: 6 }}>
-                    <button className="btn-secondary" onClick={() => openEdit(p)} style={{ padding: '4px 12px', fontSize: '0.8rem' }}>✏️</button>
-                    <button className="btn-danger" onClick={() => handleDelete(p.id_producto)} style={{ padding: '4px 12px', fontSize: '0.8rem' }}>🗑️</button>
+                    <button className="btn-secondary" onClick={() => openEdit(p)} style={{ padding: '4px 12px', fontSize: '0.8rem' }}><Edit2 size={16} /></button>
+                    <button className="btn-danger" onClick={() => handleDelete(p.id_producto)} style={{ padding: '4px 12px', fontSize: '0.8rem' }}><Trash2 size={16} /></button>
                   </div>
                 </td>
               </tr>
@@ -96,6 +98,7 @@ export default function ProductsPage() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
 
       {modal && (

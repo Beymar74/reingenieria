@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { Edit2, Trash2 } from 'lucide-react';
 
 interface Tercero {
   id_tercero: string; nombre_tercero: string; telefono?: string;
@@ -58,7 +59,7 @@ export default function TercerosPage() {
       {msg && <div style={{ background: 'rgba(67,233,123,0.15)', border: '1px solid rgba(67,233,123,0.3)', borderRadius: 8, padding: '0.7rem 1rem', marginBottom: '1rem', color: '#43e97b' }}>{msg}</div>}
 
       <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem' }}>
-        <input className="input-field" placeholder="🔍 Buscar..." value={search} onChange={e => setSearch(e.target.value)} style={{ maxWidth: 320 }} />
+        <input className="input-field" placeholder="Buscar..." value={search} onChange={e => setSearch(e.target.value)} style={{ maxWidth: 320 }} />
         <select className="input-field" value={filtroTipo} onChange={e => setFiltroTipo(e.target.value)} style={{ maxWidth: 200 }}>
           <option value="TODOS">Todos</option>
           <option value="CLIENTE">Clientes</option>
@@ -67,8 +68,9 @@ export default function TercerosPage() {
         </select>
       </div>
 
-      <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16, overflow: 'hidden' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse whitespace-nowrap">
           <thead>
             <tr style={{ background: 'var(--surface2)', borderBottom: '1px solid var(--border)' }}>
               {['ID', 'Nombre', 'Teléfono', 'Correo', 'Tipo', 'Estado', 'Acciones'].map(h => (
@@ -91,8 +93,8 @@ export default function TercerosPage() {
                 </td>
                 <td style={{ padding: '0.7rem 1rem' }}>
                   <div style={{ display: 'flex', gap: 6 }}>
-                    <button className="btn-secondary" onClick={() => openEdit(t)} style={{ padding: '4px 12px', fontSize: '0.8rem' }}>✏️</button>
-                    <button className="btn-danger" onClick={() => handleDelete(t.id_tercero)} style={{ padding: '4px 12px', fontSize: '0.8rem' }}>🗑️</button>
+                    <button className="btn-secondary" onClick={() => openEdit(t)} style={{ padding: '4px 12px', fontSize: '0.8rem' }}><Edit2 size={16} /></button>
+                    <button className="btn-danger" onClick={() => handleDelete(t.id_tercero)} style={{ padding: '4px 12px', fontSize: '0.8rem' }}><Trash2 size={16} /></button>
                   </div>
                 </td>
               </tr>
@@ -102,6 +104,7 @@ export default function TercerosPage() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
 
       {modal && (
